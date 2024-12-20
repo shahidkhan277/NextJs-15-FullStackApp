@@ -8,11 +8,10 @@ import { notFound } from "next/navigation";
 import { formatDate } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
-
 import markdownit from "markdown-it";
-import { Skeleton } from "@/app/components/ui/skeleton";
-// import View from "@/components/View";
+import View from "@/app/components/View";
 import StartupCard, { StartupTypeCard } from "@/app/components/StartupCard";
+import { Skeleton } from "@/app/components/ui/skeleton";
 
 const md = markdownit();
 
@@ -20,12 +19,12 @@ export const experimental_ppr = true;
 
 const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
-
-  const [post, { select: editorPosts }] = await Promise.all([
+  //{ select: editorPosts }
+  const [post] = await Promise.all([
     client.fetch(STARTUP_BY_ID_QUERY, { id }),
-    client.fetch(PLAYLIST_BY_SLUG_QUERY, {
-      slug: "editor-picks-new",
-    }),
+    // client.fetch(PLAYLIST_BY_SLUG_QUERY, {
+    //   slug: "editor-picks-new",
+    // }),
   ]);
 
   if (!post) return notFound();
@@ -35,7 +34,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
   return (
     <>
       <section className="pink_container !min-h-[230px]">
-        <p className="tag">{formatDate(post?._createdAt)}</p>
+        {formatDate(post?._createdAt)}
 
         <h1 className="heading">{post.title}</h1>
         <p className="sub-heading !max-w-5xl">{post.description}</p>
@@ -86,7 +85,7 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
 
         <hr className="divider" />
 
-        {editorPosts?.length > 0 && (
+        {/* {editorPosts?.length > 0 && (
           <div className="max-w-4xl mx-auto">
             <p className="text-30-semibold">Editor Picks</p>
 
@@ -96,11 +95,11 @@ const Page = async ({ params }: { params: Promise<{ id: string }> }) => {
               ))}
             </ul>
           </div>
-        )}
+        )} */}
 
-        {/* <Suspense fallback={<Skeleton className="view_skeleton" />}>
+        <Suspense fallback={<Skeleton className="view_skeleton" />}>
           <View id={id} />
-        </Suspense> */}
+        </Suspense>
       </section>
     </>
   );
